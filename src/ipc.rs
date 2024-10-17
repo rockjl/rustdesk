@@ -663,9 +663,8 @@ async fn handle(data: Data, stream: &mut Connection) {
 
 pub async fn connect(ms_timeout: u64, postfix: &str) -> ResultType<ConnectionTmpl<ConnClient>> {
     let path = Config::ipc_path(postfix);
-    println!("path:{:#?} ms_timeout:{:#?}", path, ms_timeout);
+    println!("ipc.rs connect(u64,&str) path:{:#?} ms_timeout:{:#?}", path, ms_timeout);
     let client = timeout(ms_timeout, Endpoint::connect(&path)).await??;
-    println!("4444");
     Ok(ConnectionTmpl::new(client))
 }
 
