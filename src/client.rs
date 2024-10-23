@@ -299,6 +299,7 @@ impl Client {
                 (check_port(other_server, RENDEZVOUS_PORT), Vec::new(), true)
             }
         };
+        log::info!("rendezvous_server:{:#?} servers:{:#?} contained:{:#?}", rendezvous_server, servers, contained);
 
         let mut socket = connect_tcp(&*rendezvous_server, CONNECT_TIMEOUT).await;
         debug_assert!(!servers.contains(&rendezvous_server));
@@ -317,7 +318,13 @@ impl Client {
             crate::refresh_rendezvous_server();
         }
         log::info!("rendezvous server: {}", rendezvous_server);
-        let mut socket = socket?;
+        let mut socket = match socket {
+            Ok(r) => { r }
+            Err(e) => {
+                log::error!("client.rs Client._start(e) e:{:#?}", e);
+                return Err(e);
+            }
+        };
         let my_addr = socket.local_addr();
         let mut signed_id_pk = Vec::new();
         let mut relay_server = "".to_owned();
@@ -351,7 +358,14 @@ impl Client {
                 version: crate::VERSION.to_owned(),
                 ..Default::default()
             });
-            socket.send(&msg_out).await?;
+            match socket.send(&msg_out).await {
+                Ok(_) => { 
+                    log::info!("client.rs Client::_start() socket.send.success");
+                }
+                Err(e) => {
+                    log::error!("client.rs Client::_start() e:{:#?}", e);
+                }
+            };
             // below timeout should not bigger than hbbs's connection timeout.
             if let Some(msg_in) =
                 crate::get_next_nonkeyexchange_msg(&mut socket, Some(i * 6000)).await
@@ -364,18 +378,24 @@ impl Client {
                             }
                             match ph.failure.enum_value() {
                                 Ok(punch_hole_response::Failure::ID_NOT_EXIST) => {
+                                    log::error!("ID_NOT_EXISTS");
                                     bail!("ID does not exist");
                                 }
                                 Ok(punch_hole_response::Failure::OFFLINE) => {
+                                    log::error!("OFFLINE");
                                     bail!("Remote desktop is offline");
                                 }
                                 Ok(punch_hole_response::Failure::LICENSE_MISMATCH) => {
+                                    log::error!("LICENSE_MISMATCH");
                                     bail!("Key mismatch");
                                 }
                                 Ok(punch_hole_response::Failure::LICENSE_OVERUSE) => {
+                                    log::error!("LICENSE_OVERUSE");
                                     bail!("Key overuse");
                                 }
-                                _ => bail!("other punch hole failure"),
+                                _ => {
+                                    bail!("other punch hole failure")
+                                }
                             }
                         } else {
                             peer_nat_type = ph.nat_type();
@@ -410,6 +430,7 @@ impl Client {
                         return Ok(((conn, false, pk), (feedback, rendezvous_server)));
                     }
                     _ => {
+
                         log::error!("Unexpected protobuf msg received: {:?}", msg_in);
                     }
                 }

@@ -133,6 +133,7 @@ impl<T: InvokeUiSession> Remote<T> {
     }
 
     pub async fn io_loop(&mut self, key: &str, token: &str, round: u32) {
+        log::info!("io_loop::io_loop() key:{:#?} token:{:#?} round:{:#?}", key, token, round);
         let mut last_recv_time = Instant::now();
         let mut received = false;
         let conn_type = if self.handler.is_file_transfer() {

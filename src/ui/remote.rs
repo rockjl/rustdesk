@@ -382,13 +382,14 @@ impl sciter::EventHandler for SciterSession {
         phase: PHASE_MASK,
         reason: EventReason,
     ) -> bool {
+        println!("remote.rs on_event() _root:{:#?} source:{:#?} _target:{:#?} code:{:#?} phase:{:#?} reason:{:#?}", _root, source, _target, code, phase, reason);
         if phase != PHASE_MASK::BUBBLING {
             return false;
         }
         match code {
             BEHAVIOR_EVENTS::VIDEO_BIND_RQ => {
                 let source = Element::from(source);
-                log::debug!("[video] {:?} {} ({:?})", code, source, reason);
+                log::info!("[video] {:?} {} ({:?})", code, source, reason);
                 if let EventReason::VideoBind(ptr) = reason {
                     if ptr.is_null() {
                         return true;
@@ -400,10 +401,10 @@ impl sciter::EventHandler for SciterSession {
                 }
             }
             BEHAVIOR_EVENTS::VIDEO_INITIALIZED => {
-                log::debug!("[video] {:?}", code);
+                log::info!("[video] {:?}", code);
             }
             BEHAVIOR_EVENTS::VIDEO_STARTED => {
-                log::debug!("[video] {:?}", code);
+                log::info!("[video] {:?}", code);
                 let source = Element::from(source);
                 use sciter::dom::ELEMENT_AREAS;
                 let flags = ELEMENT_AREAS::CONTENT_BOX as u32 | ELEMENT_AREAS::SELF_RELATIVE as u32;
@@ -415,7 +416,7 @@ impl sciter::EventHandler for SciterSession {
                 );
             }
             BEHAVIOR_EVENTS::VIDEO_STOPPED => {
-                log::debug!("[video] {:?}", code);
+                log::info!("[video] {:?}", code);
             }
             _ => return false,
         };

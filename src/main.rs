@@ -30,6 +30,7 @@ fn main() {
         winapi::um::shellscalingapi::SetProcessDpiAwareness(2);
     }
     if let Some(args) = crate::core_main::core_main().as_mut() {
+        println!("main.rs args:{:#?}", args);
         ui::start(args);
     }
     common::global_clean();
