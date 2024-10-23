@@ -670,7 +670,6 @@ pub fn run_me<T: AsRef<std::ffi::OsStr>>(args: Vec<T>) -> std::io::Result<std::p
         }
     }
     let cmd = std::env::current_exe()?;
-    println!("run_me:{:#?}", cmd);
     let mut cmd = std::process::Command::new(cmd);
     #[cfg(windows)]
     let mut force_foreground = false;
