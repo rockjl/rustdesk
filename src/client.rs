@@ -318,13 +318,7 @@ impl Client {
             crate::refresh_rendezvous_server();
         }
         log::info!("rendezvous server: {}", rendezvous_server);
-        let mut socket = match socket {
-            Ok(r) => { r }
-            Err(e) => {
-                log::error!("client.rs Client._start(e) e:{:#?}", e);
-                return Err(e);
-            }
-        };
+        let mut socket = socket?;
         let my_addr = socket.local_addr();
         let mut signed_id_pk = Vec::new();
         let mut relay_server = "".to_owned();
@@ -358,14 +352,7 @@ impl Client {
                 version: crate::VERSION.to_owned(),
                 ..Default::default()
             });
-            match socket.send(&msg_out).await {
-                Ok(_) => { 
-                    log::info!("client.rs Client::_start() socket.send.success");
-                }
-                Err(e) => {
-                    log::error!("client.rs Client::_start() e:{:#?}", e);
-                }
-            };
+            socket.send(&msg_out).await?;
             // below timeout should not bigger than hbbs's connection timeout.
             if let Some(msg_in) =
                 crate::get_next_nonkeyexchange_msg(&mut socket, Some(i * 6000)).await
