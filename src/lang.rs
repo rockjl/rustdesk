@@ -92,9 +92,7 @@ pub const LANGS: &[(&str, &str)] = &[
 #[cfg(not(any(target_os = "android", target_os = "ios")))]
 pub fn translate(name: String) -> String {
     let locale = sys_locale::get_locale().unwrap_or_default();
-    let tmp_name = name.clone();
-    let ret = translate_locale(name, &locale);
-    ret
+    translate_locale(name, &locale)
 }
 
 pub fn translate_locale(name: String, locale: &str) -> String {
@@ -193,8 +191,7 @@ pub fn translate_locale(name: String, locale: &str) -> String {
             }
         }
     }
-    let ret = replace(&name.as_str());
-    ret
+    replace(&name.as_str())
 }
 
 // Matching pattern is {}

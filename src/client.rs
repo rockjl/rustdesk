@@ -299,8 +299,7 @@ impl Client {
                 (check_port(other_server, RENDEZVOUS_PORT), Vec::new(), true)
             }
         };
-        log::info!("rendezvous_server:{:#?} servers:{:#?} contained:{:#?}", rendezvous_server, servers, contained);
-
+        
         let mut socket = connect_tcp(&*rendezvous_server, CONNECT_TIMEOUT).await;
         debug_assert!(!servers.contains(&rendezvous_server));
         if socket.is_err() && !servers.is_empty() {
@@ -365,24 +364,18 @@ impl Client {
                             }
                             match ph.failure.enum_value() {
                                 Ok(punch_hole_response::Failure::ID_NOT_EXIST) => {
-                                    log::error!("ID_NOT_EXISTS");
                                     bail!("ID does not exist");
                                 }
                                 Ok(punch_hole_response::Failure::OFFLINE) => {
-                                    log::error!("OFFLINE");
                                     bail!("Remote desktop is offline");
                                 }
                                 Ok(punch_hole_response::Failure::LICENSE_MISMATCH) => {
-                                    log::error!("LICENSE_MISMATCH");
                                     bail!("Key mismatch");
                                 }
                                 Ok(punch_hole_response::Failure::LICENSE_OVERUSE) => {
-                                    log::error!("LICENSE_OVERUSE");
                                     bail!("Key overuse");
                                 }
-                                _ => {
-                                    bail!("other punch hole failure")
-                                }
+                                _ => bail!("other punch hole failure"),
                             }
                         } else {
                             peer_nat_type = ph.nat_type();
@@ -417,7 +410,6 @@ impl Client {
                         return Ok(((conn, false, pk), (feedback, rendezvous_server)));
                     }
                     _ => {
-
                         log::error!("Unexpected protobuf msg received: {:?}", msg_in);
                     }
                 }

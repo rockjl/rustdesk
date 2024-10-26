@@ -382,7 +382,6 @@ impl sciter::EventHandler for SciterSession {
         phase: PHASE_MASK,
         reason: EventReason,
     ) -> bool {
-        println!("remote.rs on_event() _root:{:#?} source:{:#?} _target:{:#?} code:{:#?} phase:{:#?} reason:{:#?}", _root, source, _target, code, phase, reason);
         if phase != PHASE_MASK::BUBBLING {
             return false;
         }

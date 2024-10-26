@@ -1742,7 +1742,6 @@ impl<T: InvokeUiSession> Session<T> {
 
 #[tokio::main(flavor = "current_thread")]
 pub async fn io_loop<T: InvokeUiSession>(handler: Session<T>, round: u32) {
-    log::info!("ui_session_interface::io_loop() handler.args:{:#?} round:{:#?} is_port_forward:{:#?}", handler.args, round, handler.is_port_forward());
     // It is ok to call this function multiple times.
     #[cfg(any(
         target_os = "windows",
