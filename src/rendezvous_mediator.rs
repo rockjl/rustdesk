@@ -142,6 +142,7 @@ impl RendezvousMediator {
     }
 
     pub async fn start_udp(server: ServerPtr, host: String) -> ResultType<()> {
+        log::info!("start_udp");
         let host = check_port(&host, RENDEZVOUS_PORT);
         let (mut socket, mut addr) = socket_client::new_udp_for(&host, CONNECT_TIMEOUT).await?;
         let mut rz = Self {
@@ -260,6 +261,7 @@ impl RendezvousMediator {
         server: &ServerPtr,
         update_latency: &mut impl FnMut(),
     ) -> ResultType<()> {
+        log::info!("handle_resp: {:#?} - ", msg);
         match msg {
             Some(rendezvous_message::Union::RegisterPeerResponse(rpr)) => {
                 update_latency();
@@ -326,6 +328,7 @@ impl RendezvousMediator {
     }
 
     pub async fn start_tcp(server: ServerPtr, host: String) -> ResultType<()> {
+        log::info!("start_tcp>>>");
         let host = check_port(&host, RENDEZVOUS_PORT);
         let mut conn = connect_tcp(host.clone(), CONNECT_TIMEOUT).await?;
         let key = crate::get_key(true).await;

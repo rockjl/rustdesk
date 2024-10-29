@@ -1,4 +1,5 @@
 use bytes::{Buf, BufMut, Bytes, BytesMut};
+use core::str;
 use std::io;
 use tokio_util::codec::{Decoder, Encoder};
 
