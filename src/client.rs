@@ -3170,7 +3170,7 @@ pub trait Interface: Send + Clone + 'static + Sized {
         let mut relay_hint_type = "relay-hint";
         // force relay
         let errno = errno::errno().0;
-        log::error!("Connection closed: {err}({errno})");
+        log::error!("Connection closed--: {err}({errno})");
         if direct == Some(true)
             && ((cfg!(windows) && (errno == 10054 || err.contains("10054")))
                 || (!cfg!(windows) && (errno == 104 || err.contains("104")))
