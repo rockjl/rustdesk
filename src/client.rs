@@ -359,6 +359,7 @@ impl Client {
             {
                 match msg_in.union {
                     Some(rendezvous_message::Union::PunchHoleResponse(ph)) => {
+                        log::info!("Client::_start::PuchHoleResponse::ph: {:#?}", ph);
                         if ph.socket_addr.is_empty() {
                             if !ph.other_failure.is_empty() {
                                 bail!(ph.other_failure);
@@ -390,6 +391,7 @@ impl Client {
                         }
                     }
                     Some(rendezvous_message::Union::RelayResponse(rr)) => {
+                        log::info!("Client::_start::RelayResponse::ph: {:#?}", rr);
                         log::info!(
                             "relay requested from peer, time used: {:?}, relay_server: {}",
                             start.elapsed(),

@@ -152,6 +152,7 @@ impl<T: InvokeUiSession> Remote<T> {
         .await
         {
             Ok(((mut peer, direct, pk), (feedback, rendezvous_server))) => {
+                log::info!("direct:{:?} pk:{:?} feedback:{:?} rendezvous_server:{:?}", direct, pk, feedback, rendezvous_server);
                 self.handler
                     .connection_round_state
                     .lock()
