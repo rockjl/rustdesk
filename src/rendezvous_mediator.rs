@@ -264,6 +264,7 @@ impl RendezvousMediator {
         log::info!("handle_resp: {:#?} - ", msg);
         match msg {
             Some(rendezvous_message::Union::RegisterPeerResponse(rpr)) => {
+                log::info!("RendezvousMediator::handle_resp::RegisterPeerResponse: rpr:{:?}", rpr);
                 update_latency();
                 if rpr.request_pk {
                     log::info!("request_pk received from {}", self.host);
@@ -271,6 +272,7 @@ impl RendezvousMediator {
                 }
             }
             Some(rendezvous_message::Union::RegisterPkResponse(rpr)) => {
+                log::info!("RendezvousMediator::handle_resp::RegisterPkResponse: rpr:{:?}", rpr);
                 update_latency();
                 match rpr.result.enum_value() {
                     Ok(register_pk_response::Result::OK) => {
@@ -291,6 +293,7 @@ impl RendezvousMediator {
                 }
             }
             Some(rendezvous_message::Union::PunchHole(ph)) => {
+                log::info!("RendezvousMediator::handle_resp::PunchHole: ph:{:?}", ph);
                 let rz = self.clone();
                 let server = server.clone();
                 tokio::spawn(async move {
@@ -298,6 +301,7 @@ impl RendezvousMediator {
                 });
             }
             Some(rendezvous_message::Union::RequestRelay(rr)) => {
+                log::info!("RendezvousMediator::handle_resp::RequestRelay: rr:{:?}", rr);
                 let rz = self.clone();
                 let server = server.clone();
                 tokio::spawn(async move {
@@ -305,6 +309,7 @@ impl RendezvousMediator {
                 });
             }
             Some(rendezvous_message::Union::FetchLocalAddr(fla)) => {
+                log::info!("RendezvousMediator::handle_resp::FetchLocalAddr: fla:{:?}", fla);
                 let rz = self.clone();
                 let server = server.clone();
                 tokio::spawn(async move {
@@ -312,6 +317,7 @@ impl RendezvousMediator {
                 });
             }
             Some(rendezvous_message::Union::ConfigureUpdate(cu)) => {
+                log::info!("RendezvousMediator::handle_resp::ConfigureUpdate: cu:{:?}", cu);
                 let v0 = Config::get_rendezvous_servers();
                 Config::set_option(
                     "rendezvous-servers".to_owned(),
