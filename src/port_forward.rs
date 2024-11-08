@@ -113,6 +113,7 @@ async fn connect_and_login(
     token: &str,
     is_rdp: bool,
 ) -> ResultType<Option<Stream>> {
+    log::info!("id:{:?} password:{:?} key:{:?} token:{:?} is_rdp:{:?}", id, password, key, token, is_rdp);
     let conn_type = if is_rdp {
         ConnType::RDP
     } else {
