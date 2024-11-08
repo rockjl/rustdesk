@@ -431,11 +431,12 @@ impl RendezvousMediator {
     ) -> ResultType<()> {
         let peer_addr = AddrMangle::decode(&socket_addr);
         log::info!(
-            "create_relay requested from {:?}, relay_server: {}, uuid: {}, secure: {}",
+            "create_relay requested from {:?}, relay_server: {}, uuid: {}, secure: {}, self.host:{:?}",
             peer_addr,
             relay_server,
             uuid,
             secure,
+            self.host,
         );
 
         let mut socket = connect_tcp(&*self.host, CONNECT_TIMEOUT).await?;
@@ -520,24 +521,24 @@ impl RendezvousMediator {
 
     async fn handle_punch_hole(&self, ph: PunchHole, server: ServerPtr) -> ResultType<()> {
         let relay_server = self.get_relay_server(ph.relay_server);
-        if ph.nat_type.enum_value() == Ok(NatType::SYMMETRIC)
-            || Config::get_nat_type() == NatType::SYMMETRIC as i32
-            || config::is_disable_tcp_listen()
-        {
-            let uuid = Uuid::new_v4().to_string();
-            return self
-                .create_relay(
-                    ph.socket_addr.into(),
-                    relay_server,
-                    uuid,
-                    server,
-                    true,
-                    true,
-                )
-                .await;
-        }
+        // if ph.nat_type.enum_value() == Ok(NatType::SYMMETRIC)
+        //     || Config::get_nat_type() == NatType::SYMMETRIC as i32
+        //     || config::is_disable_tcp_listen()
+        // {
+        //     let uuid = Uuid::new_v4().to_string();
+        //     return self
+        //         .create_relay(
+        //             ph.socket_addr.into(),
+        //             relay_server,
+        //             uuid,
+        //             server,
+        //             true,
+        //             true,
+        //         )
+        //         .await;
+        // }
         let peer_addr = AddrMangle::decode(&ph.socket_addr);
-        log::debug!("Punch hole to {:?}", peer_addr);
+        log::info!("handle_punch_hole:Punch hole to {:?}", peer_addr);
         let mut socket = {
             let socket = connect_tcp(&*self.host, CONNECT_TIMEOUT).await?;
             let local_addr = socket.local_addr();

@@ -247,6 +247,7 @@ async fn create_relay_connection_(
     secure: bool,
     ipv4: bool,
 ) -> ResultType<()> {
+    log::info!("create_relay_connection: relay_server:{:?} uuid:{:?} peer_addr:{:?} secure:{:?} ipv4:{:?}", relay_server, uuid, peer_addr, secure, ipv4);
     let mut stream = socket_client::connect_tcp(
         socket_client::ipv4_to_ipv6(crate::check_port(relay_server, RELAY_PORT), ipv4),
         CONNECT_TIMEOUT,
